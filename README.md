@@ -12,11 +12,7 @@ A production-oriented, modular AI Personal Assistant built with **FastAPI**, **P
 
 ---
 
-<<<<<<< HEAD
 ## 📋 Project at a Glance 
-=======
-## 📋 Project at a Glance
->>>>>>> 6332120 (docs: README accuracy corrections (async wording, production claims, diagram typos, Python version, Qdrant placement, task orchestration))
 
 **AI Personal Assistant** is a production-oriented AI chatbot that acts as a personal assistant on Telegram. Users talk to it in plain natural language, and it can:
 
