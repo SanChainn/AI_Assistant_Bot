@@ -1,6 +1,6 @@
 ﻿# AI Personal Assistant 🤖
 
-A production-grade, modular AI Personal Assistant built with **FastAPI**, **Python 3.13**, and **Clean Architecture**. Integrates with **Telegram**, **Google Calendar**, **OpenRouter LLM**, and supports long-term memory, RAG, tool calling, and multi-user capabilities.
+A production-oriented, modular AI Personal Assistant built with **FastAPI**, **Python 3.10+**, and **Clean Architecture**. Integrates with **Telegram**, **Google Calendar**, **OpenRouter LLM**, and supports long-term memory, RAG, tool calling, and multi-user capabilities.
 
 > 📚 **Documentation:** [📘 System Overview & Diagrams](SYSTEM_OVERVIEW.md) · [🏗️ Architecture Deep Dive](ARCHITECTURE.md) · [🚀 Deployment Guide](DEPLOYMENT.md)
 
@@ -12,9 +12,13 @@ A production-grade, modular AI Personal Assistant built with **FastAPI**, **Pyth
 
 ---
 
+<<<<<<< HEAD
 ## 📋 Project at a Glance 
+=======
+## 📋 Project at a Glance
+>>>>>>> 6332120 (docs: README accuracy corrections (async wording, production claims, diagram typos, Python version, Qdrant placement, task orchestration))
 
-**AI Personal Assistant** is a production-ready AI chatbot that acts as a personal assistant on Telegram. Users talk to it in plain natural language, and it can:
+**AI Personal Assistant** is a production-oriented AI chatbot that acts as a personal assistant on Telegram. Users talk to it in plain natural language, and it can:
 
 - 🗨️ **Hold intelligent conversations** powered by Large Language Models (OpenRouter)
 - 🧠 **Remember every user** — persistent chat history and preferences in PostgreSQL
@@ -22,22 +26,22 @@ A production-grade, modular AI Personal Assistant built with **FastAPI**, **Pyth
 - 📄 **Answer questions about uploaded documents** using RAG (Retrieval-Augmented Generation) with vector search
 - ⏰ **Run background jobs** — reminders and document processing via Celery
 
-> **In one sentence:** An AI-powered personal assistant on Telegram that understands natural language, remembers its users, and takes real-world actions like managing Google Calendar events — built as a scalable, production-grade backend.
+> **In one sentence:** An AI-powered personal assistant on Telegram that understands natural language, remembers its users, and takes real-world actions like managing Google Calendar events — built as a scalable, production-style backend.
 
 ### Engineering Highlights
 
-| Area               | What was built                                                                                                                                                                 |
-| ------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| **Architecture**   | Clean Architecture with strict layers (API → Services → Repositories → Models), Dependency Injection, Repository Pattern, SOLID                                                |
-| **AI Engineering** | LLM tool calling (function calling) with a custom extensible tool registry, RAG pipeline (embeddings → Qdrant vector search → context-aware answers), multi-step task planning |
-| **Integrations**   | Telegram Bot API (webhook + polling), Google OAuth 2.0, Google Calendar API, OpenRouter LLM API, Qdrant vector DB                                                              |
-| **Performance**    | 100% async Python (asyncio) — many users can chat concurrently; Redis caching                                                                                                  |
-| **Deployment**     | Full Docker Compose stack (FastAPI, Celery, PostgreSQL, Redis, Qdrant, Nginx) with HTTPS webhooks; plus a zero-dependency SQLite dev mode                                      |
-| **Code Quality**   | Type hints everywhere, Pydantic v2 validation, SQLAlchemy 2 async ORM, Alembic migrations, Ruff + strict mypy                                                                  |
+| Area               | What was built                                                                                                                                                                      |
+| ------------------ | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Architecture**   | Clean Architecture with strict layers (API → Services → Repositories → Models), Dependency Injection, Repository Pattern, SOLID                                                     |
+| **AI Engineering** | LLM tool calling (function calling) with a custom extensible tool registry, RAG pipeline (embeddings → Qdrant vector search → context-aware answers), multi-step task orchestration |
+| **Integrations**   | Telegram Bot API (webhook + polling), Google OAuth 2.0, Google Calendar API, OpenRouter LLM API, Qdrant vector DB                                                                   |
+| **Performance**    | Asynchronous Python with asyncio — many users can chat concurrently; Redis caching                                                                                                  |
+| **Deployment**     | Full Docker Compose stack (FastAPI, Celery, PostgreSQL, Redis, Qdrant, Nginx) with HTTPS webhooks; plus a zero-dependency SQLite dev mode                                           |
+| **Code Quality**   | Type hints everywhere, Pydantic v2 validation, SQLAlchemy 2 async ORM, Alembic migrations, Ruff + strict mypy                                                                       |
 
 ### Bullet points (achievements style)
 
-- Built a **production-grade AI assistant** on Telegram serving multiple users concurrently using **Python, FastAPI, and 100% async I/O**
+- Built an **AI assistant** on Telegram serving multiple users concurrently using **Python, FastAPI, and asynchronous I/O (asyncio)**
 - Designed a **Clean Architecture** backend (API → Services → Repositories → Models) with **Dependency Injection** and the **Repository Pattern**, keeping business logic testable and framework-independent
 - Implemented **LLM function calling (tool use)** with a custom extensible tool registry — the AI creates, lists, and deletes **Google Calendar** events via **OAuth 2.0** through a seamless web-based login flow
 - Developed a **RAG pipeline** for document understanding: upload → embeddings → **Qdrant** vector search → context-aware answers
@@ -75,7 +79,6 @@ From the moment a user hits **Send** in Telegram to the bot's reply:
 ```
 ┌─────────────────────────────────────────────────────────────┐
 │                        Telegram Bot                          │
-│                     @sanchaintun_bot                         │
 └──────────────────────────┬──────────────────────────────────┘
                            │ webhook / polling
                            ▼
@@ -85,27 +88,29 @@ From the moment a user hits **Send** in Telegram to the bot's reply:
 │  │  API v1  │  │ Services │  │  Tools   │  │   LLM Client │ │
 │  │  Routes  │──│  Layer   │──│  System  │──│  (OpenRouter)│ │
 │  └──────────┘  └──────────┘  └──────────┘  └──────────────┘ │
-│                      │          │                             │
-│                      ▼          ▼                             │
-│  ┌──────────┐  ┌──────────┐  ┌──────────┐                    │
-│  │Repositary│  │  Models  │  │  Vector  │                    │
-│  │  Layer   │  │ SQLAlchm │  │  Qdrant  │                    │
-│  └────┬─────┘  └────┬─────┘  └────┬─────┘                    │
-│       │              │             │                          │
-└───────┼──────────────┼─────────────┼──────────────────────────┘
-        │              │             │
-        ▼              ▼             ▼
-   ┌────────┐    ┌──────────┐   ┌────────┐
-   │Postgres│    │  Redis   │   │ Qdrant │
-   │   DB   │    │  Cache   │   │VectorDB│
-   └────────┘    └──────────┘   └────────┘
+│                      │                                       │
+│                      ▼                                       │
+│  ┌──────────────────────┐    ┌──────────────────────┐        │
+│  │   Repository Layer   │    │   Models             │        │
+│  │   (data access)      │    │   (SQLAlchemy 2)     │        │
+│  └──────────┬───────────┘    └──────────────────────┘        │
+│             │                                                │
+└─────────────┼────────────────────────────────────────────────┘
+              │
+              ▼
+       ┌────────────┐   ┌──────────┐   ┌──────────────┐
+       │ PostgreSQL │   │  Redis   │   │    Qdrant    │
+       │     DB     │   │  Cache   │   │   Vector DB  │
+       └────────────┘   └──────────┘   └──────────────┘
 ```
+
+All infrastructure (PostgreSQL, Redis, Qdrant) is external — the application reaches it through repository and client layers.
 
 ## Tech Stack
 
 | Layer               | Technology                                                  |
 | ------------------- | ----------------------------------------------------------- |
-| **Backend**         | FastAPI, Python 3.13, AsyncIO                               |
+| **Backend**         | FastAPI, Python 3.10+, asyncio                              |
 | **Database**        | PostgreSQL, SQLAlchemy 2, Alembic                           |
 | **Cache**           | Redis                                                       |
 | **Vector DB**       | Qdrant                                                      |
@@ -121,7 +126,7 @@ From the moment a user hits **Send** in Telegram to the bot's reply:
 - ✅ **Long-term memory** — Persistent chat history in PostgreSQL
 - ✅ **Google Calendar** — OAuth2 web-based login, create/list/delete events
 - ✅ **Tool calling** — Extensible tool system (calendar, email, system)
-- ✅ **Task planning** — Multi-step task decomposition
+- ✅ **Task orchestration** — Multi-step task decomposition
 - ✅ **File understanding (RAG)** — Qdrant vector search for document Q&A
 - ✅ **Multi-user support** — Isolated per-user data and preferences
 - ✅ **Telegram interaction** — Polling (dev) / webhook (production)
