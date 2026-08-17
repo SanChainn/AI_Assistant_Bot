@@ -4,6 +4,14 @@ A production-grade, modular AI Personal Assistant built with **FastAPI**, **Pyth
 
 > 📚 **Documentation:** [📘 System Overview & Diagrams](SYSTEM_OVERVIEW.md) · [🏗️ Architecture Deep Dive](ARCHITECTURE.md) · [🚀 Deployment Guide](DEPLOYMENT.md)
 
+
+## 🖼️ Visual Overview
+
+| System Overview | AI Personal Assistant |
+|:---:|:---:|
+| ![System Overview](docs/images/system-overview.jpg) | ![AI Personal Assistant](docs/images/ai-personal-assistant.jpg) |
+
+
 ---
 
 ## 📋 Project at a Glance (For Recruiters)
@@ -42,6 +50,25 @@ A production-grade, modular AI Personal Assistant built with **FastAPI**, **Pyth
 ### Skills / Keywords Demonstrated
 
 `Python` · `FastAPI` · `AsyncIO` · `LLM Integration (OpenRouter)` · `Function/Tool Calling` · `RAG` · `Embeddings` · `Vector DB (Qdrant)` · `PostgreSQL` · `SQLAlchemy 2` · `Alembic` · `Redis` · `Celery` · `Docker` · `Docker Compose` · `Nginx` · `REST API` · `OAuth 2.0` · `Google Calendar API` · `Telegram Bot API` · `Clean Architecture` · `SOLID` · `Repository Pattern` · `Dependency Injection` · `Pydantic v2` · `Webhooks`
+
+---
+
+## 🔄 How One Message Works
+
+From the moment a user hits **Send** in Telegram to the bot's reply:
+
+![How One Message Works](docs/images/how-one-message-works.jpg)
+
+<details>
+<summary>Step-by-step breakdown</summary>
+
+1. **Telegram** delivers the update to the FastAPI app (webhook in production, polling in dev)
+2. **TelegramService** parses the message and loads/creates the user and chat (PostgreSQL)
+3. **ConversationService** builds the prompt: system instructions + user preferences + recent history + RAG context
+4. **LLM Client** calls OpenRouter; if the model requests a tool, the **Tool Registry** executes it (e.g. Google Calendar) and loops back
+5. The final answer is persisted as a message and sent back via the **Telegram Bot API**
+
+</details>
 
 ---
 
