@@ -29,20 +29,6 @@ A production-grade, modular AI Personal Assistant built with **FastAPI**, **Pyth
 | **Deployment**     | Full Docker Compose stack (FastAPI, Celery, PostgreSQL, Redis, Qdrant, Nginx) with HTTPS webhooks; plus a zero-dependency SQLite dev mode                                      |
 | **Code Quality**   | Type hints everywhere, Pydantic v2 validation, SQLAlchemy 2 async ORM, Alembic migrations, Ruff + strict mypy                                                                  |
 
----
-
-## 📄 CV-Ready Project Description
-
-Copy-paste the version that fits your CV format:
-
-### One-liner (compact CV)
-
-> **AI Personal Assistant (Telegram Bot)** — Built a production-grade, multi-user AI assistant with FastAPI, LLM tool-calling, RAG document Q&A, and Google Calendar integration, deployed with Docker/Nginx.
-
-### Short paragraph (2–3 sentences)
-
-> Designed and developed an AI Personal Assistant chatbot on Telegram using Python/FastAPI and Clean Architecture. The assistant holds natural-language conversations via LLM APIs (OpenRouter), remembers users and chat history in PostgreSQL, performs Google Calendar actions through an OAuth 2.0–secured tool-calling system, and answers questions over uploaded documents using a RAG pipeline (Qdrant vector search). Fully containerized with Docker Compose (Nginx, Celery, Redis, PostgreSQL) for production deployment.
-
 ### Bullet points (achievements style)
 
 - Built a **production-grade AI assistant** on Telegram serving multiple users concurrently using **Python, FastAPI, and 100% async I/O**
