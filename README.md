@@ -8,7 +8,7 @@ A production-oriented, modular AI Personal Assistant built with **FastAPI**, **P
 
 |                   System Overview                   |                      AI Personal Assistant                      |
 | :-------------------------------------------------: | :-------------------------------------------------------------: |
-| ![System Overview](docs/images/system-overview.jpg) | ![AI Personal Assistant](docs/images/ai-personal-assistant.jpg) |
+| ![System Overview](docs/images/system-overview.jpg) | ![AI Personal Assistant](https://github.com/SanChainn/AI_Assistant_Bot/blob/main/docs/images/ai-personal-assistant.jpg) |
 
 ---
 
