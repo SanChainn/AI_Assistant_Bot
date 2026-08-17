@@ -1,0 +1,54 @@
+# Secrets — NEVER commit these
+.env
+.env.*
+!.env.example
+
+# Databases (local dev data)
+*.db
+*.sqlite
+*.sqlite3
+assistant.db
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+*.egg-info/
+dist/
+build/
+.eggs/
+
+# Virtual environments
+.venv/
+venv/
+env/
+
+# Tooling caches
+.mypy_cache/
+.pytest_cache/
+.ruff_cache/
+.coverage
+htmlcov/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Docker
+docker-compose.override.yml
+
+# Logs
+*.log
+
+# Google credentials
+client_secret*.json
+token*.pickle
+credentials*.json
