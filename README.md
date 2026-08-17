@@ -295,8 +295,6 @@ The bot uses a **web-based OAuth flow** — like a real web app:
 5. User sees a "Connected!" page ✅
 6. Bot notifies the user on Telegram 🎉
 
-**No code copying. No code pasting.**
-
 The callback endpoint is:
 
 ```
