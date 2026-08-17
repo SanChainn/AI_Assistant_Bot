@@ -129,8 +129,9 @@ python -m venv .venv
 # Linux/macOS:
 # source .venv/bin/activate
 
-# Install dependencies
-pip install -e .
+# Install dependencies (choose one)
+pip install -r requirements.txt   # simple install
+pip install -e .                  # editable install (developers)
 ```
 
 ### 2. Configure environment
