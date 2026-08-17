@@ -15,6 +15,8 @@ from app.schemas.message import MessageCreate
 from app.schemas.user import UserCreate
 from app.services.chat import ChatService
 from app.services.conversation import ConversationService
+from app.services.document_reader import document_reader
+from app.services.rag import rag_service
 from app.services import google_calendar
 from app.services.user import UserService
 from app.repositories.user import UserRepository
@@ -99,6 +101,19 @@ class TelegramService:
         # 3. Save user message
         text = message.get("text", "")
 
+        # Handle document/file uploads (sent as attachments, may include a caption)
+        if not text and message.get("document"):
+            return await self._handle_file_upload(message, chat, user, telegram_chat_id)
+
+        # Photos can't be text-extracted yet — acknowledge politely
+        if not text and message.get("photo"):
+            await bot_client.send_message(
+                chat_id=telegram_chat_id,
+                text="📷 I received your photo, but I can only read document files "
+                     "(txt, md, csv, json, pdf, docx...) for now.",
+            )
+            return {"ok": True, "user_id": str(user.id), "chat_id": str(chat.id)}
+
         # Handle commands — support both underscore and no-underscore variants
         text_lower = text.lower().strip()
 
@@ -109,7 +124,8 @@ class TelegramService:
                 "• Answering questions\n"
                 "• Managing your calendar\n"
                 "• Sending emails\n"
-                "• Remembering information\n\n"
+                "• Remembering information\n"
+                "• Reading documents you send me (txt, pdf, docx, csv...) 📎\n\n"
                 "Commands:\n"
                 "/connectcalendar - Connect Google Calendar\n"
                 "/disconnectcalendar - Disconnect Google Calendar\n"
@@ -121,6 +137,8 @@ class TelegramService:
         if text_lower in ("/help", "/help@sanchaintun_bot"):
             reply = (
                 "Available commands:\n\n"
+                "📎 Send me any document (txt, md, csv, json, pdf, docx) and I'll "
+                "read it, summarize it, or turn it into tasks/calendar events!\n\n"
                 "/connectcalendar - Connect your Google Calendar\n"
                 "   -> I'll send you a link to authorize\n"
                 "   -> Open it, sign in, and send me the code\n"
@@ -246,3 +264,117 @@ class TelegramService:
             "chat_id": str(chat.id),
             "response_length": len(ai_content),
         }
+
+    async def _handle_file_upload(
+        self,
+        message: dict,
+        chat,
+        user,
+        telegram_chat_id: int,
+    ) -> dict:
+        """
+        Process a document uploaded by the user.
+
+        Downloads the file from Telegram, extracts its text content,
+        stores it in the chat history (so the LLM can read it), indexes
+        it for RAG search (best-effort), and generates an AI response
+        that acts on the file contents (e.g., "make tasks from my todolist").
+        """
+        doc = message.get("document", {})
+        file_id = doc.get("file_id")
+        file_name = doc.get("file_name") or "document"
+        mime_type = doc.get("mime_type")
+        caption = (message.get("caption") or "").strip()
+
+        await bot_client.send_typing(telegram_chat_id)
+
+        # Telegram Bot API limits bot downloads to 20 MB
+        file_size = doc.get("file_size") or 0
+        if file_size > 20 * 1024 * 1024:
+            await bot_client.send_message(
+                chat_id=telegram_chat_id,
+                text=f"⚠️ '{file_name}' is larger than 20 MB, which is the Telegram "
+                     "bot download limit. Please send a smaller file.",
+            )
+            return {"ok": False, "error": "file_too_large"}
+
+        try:
+            # 1. Resolve the file path on Telegram servers
+            file_info = await bot_client.get_file(file_id)
+            if not file_info.get("ok"):
+                error_desc = file_info.get("description", "getFile failed")
+                await bot_client.send_message(
+                    chat_id=telegram_chat_id,
+                    text=f"❌ I couldn't access '{file_name}': {error_desc}",
+                )
+                return {"ok": False, "error": "get_file_failed"}
+
+            file_path = file_info.get("result", {}).get("file_path", "")
+
+            # 2. Download the raw bytes
+            data = await bot_client.download_file(file_path)
+            logger.info("Downloaded file '%s' (%d bytes)", file_name, len(data))
+
+            # 3. Extract text content
+            content = await document_reader.extract_text(
+                data, file_name=file_name, mime_type=mime_type
+            )
+
+            # 4. Save as a user message so the LLM sees the full file contents
+            header = f"[User uploaded file: {file_name}]"
+            if caption:
+                header += f"\nUser instruction: {caption}"
+            message_data = MessageCreate(
+                chat_id=chat.id,
+                user_id=user.id,
+                role="user",
+                content=f"{header}\n\n{content}",
+                telegram_message_id=message.get("message_id"),
+            )
+            user_message = await self._chat_service.add_message(message_data)
+
+            # 5. Index the file for future semantic search (best-effort)
+            try:
+                await rag_service.index_document(
+                    content=content,
+                    metadata={
+                        "user_id": str(user.id),
+                        "source": file_name,
+                    },
+                )
+            except Exception as e:
+                logger.warning("RAG indexing of uploaded file failed (non-critical): %s", e)
+
+            # 6. Generate an AI response that reads/acts on the file
+            ai_content = ""
+            try:
+                ai_content = await self._conversation_service.generate_response(
+                    chat_id=chat.id,
+                    user_message_id=user_message.id,
+                )
+            except Exception as e:
+                logger.error("LLM generation failed for file upload: %s", e)
+                ai_content = (
+                    f"I read '{file_name}' successfully, but encountered an error "
+                    "while processing it. Please try again."
+                )
+
+            if ai_content:
+                await bot_client.send_message(chat_id=telegram_chat_id, text=ai_content)
+
+            return {"ok": True, "user_id": str(user.id), "chat_id": str(chat.id)}
+
+        except ValueError as e:
+            # Unsupported format, empty file, or parse failure
+            await bot_client.send_message(
+                chat_id=telegram_chat_id,
+                text=f"📎 I received '{file_name}' but couldn't read it: {e}",
+            )
+            return {"ok": False, "error": str(e)}
+        except Exception as e:
+            logger.exception("Failed to process file upload: %s", e)
+            await bot_client.send_message(
+                chat_id=telegram_chat_id,
+                text="❌ Sorry, something went wrong while reading your file. Please try again.",
+            )
+            return {"ok": False, "error": str(e)}

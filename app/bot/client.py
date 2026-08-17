@@ -71,6 +71,28 @@ class TelegramBotClient:
 
         return result
 
+    async def get_file(self, file_id: str) -> dict:
+        """Get file metadata (including file_path) for a file on Telegram servers."""
+        return await self._call("getFile", file_id=file_id)
+
+    async def download_file(self, file_path: str) -> bytes:
+        """
+        Download file content from Telegram.
+
+        Uses the file_path returned by getFile. Files up to 20 MB
+        can be downloaded this way (Telegram Bot API limit).
+        """
+        from urllib.parse import quote
+
+        url = f"https://api.telegram.org/file/bot{self._token}/{quote(file_path, safe='/')}"
+        try:
+            response = await self._http.get(url)
+            response.raise_for_status()
+            return response.content
+        except httpx.HTTPError as e:
+            logger.error("Telegram file download error: %s", e)
+            raise
+
     async def send_typing(self, chat_id: int) -> dict:
         """Send a 'typing' chat action indicator."""
         return await self._call(
