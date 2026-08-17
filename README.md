@@ -341,6 +341,19 @@ All configuration lives in `.env` (copy from [.env.example](.env.example)). **Ne
 
 ## Development
 
+### Resetting the local database
+
+Development mode uses a single SQLite file. Delete it to wipe all
+users/chats/messages - it is recreated on the next start:
+
+```bash
+del assistant.db        # Windows
+rm assistant.db         # Linux/macOS
+```
+
+(For Docker/PostgreSQL/Qdrant resets, see
+[DEPLOYMENT.md](DEPLOYMENT.md) -> "Resetting / Clearing the Database".)
+
 ### Coding Standards
 
 - **async/await** everywhere

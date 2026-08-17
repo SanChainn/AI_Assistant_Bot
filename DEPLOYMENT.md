@@ -333,6 +333,58 @@ public URL is needed:
 
 ---
 
+## Resetting / Clearing the Database
+
+### SQLite (development mode)
+
+The dev database is a single file - just delete it. Tables are recreated
+automatically on the next `python run_dev.py`:
+
+```bash
+rm assistant.db        # Linux/macOS
+del assistant.db       # Windows
+```
+
+### Docker Compose (full wipe - deletes ALL data)
+
+The `-v` flag removes every volume (PostgreSQL, Redis, Qdrant). Users,
+chats, documents and vectors are all erased:
+
+```bash
+docker compose down -v        # destructive: wipes DB + cache + vectors
+docker compose up --build -d  # fresh start
+```
+
+### PostgreSQL only (keep Redis/Qdrant data)
+
+Drop and recreate the database, then let the app rebuild the schema
+(`create_all` on boot, or `alembic upgrade head`):
+
+```bash
+docker compose exec postgres psql -U <POSTGRES_USER> -d postgres \
+  -c "DROP DATABASE assistant_agent WITH (FORCE);"
+docker compose exec postgres psql -U <POSTGRES_USER> -d postgres \
+  -c "CREATE DATABASE assistant_agent OWNER <POSTGRES_USER>;"
+docker compose restart app
+```
+
+Or keep the schema and just empty the tables:
+
+```bash
+docker compose exec postgres psql -U <POSTGRES_USER> -d assistant_agent \
+  -c "TRUNCATE messages, chats, users RESTART IDENTITY CASCADE;"
+```
+
+### Qdrant only (clear RAG document vectors)
+
+```bash
+curl -X DELETE http://localhost:6333/collections/<QDRANT_COLLECTION>
+```
+
+The collection is recreated automatically on the next document upload.
+
+---
+
 ## Database Migrations
 
 There are currently no Alembic revisions; the app creates any **missing**
