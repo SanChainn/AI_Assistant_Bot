@@ -2,7 +2,7 @@
 
 > **Version:** 0.5.0  
 > **Architecture:** Clean Architecture + SOLID + Repository Pattern + Dependency Injection  
-> **Backend:** FastAPI + Python 3.13 AsyncIO  
+> **Backend:** FastAPI + Python 3.10+ asyncio  
 > **Database:** PostgreSQL (SQLite in dev mode)  
 > **LLM:** OpenRouter API (deepseek/deepseek-v4-flash-0731)  
 > **Bot:** Telegram Bot API

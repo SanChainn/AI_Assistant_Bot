@@ -464,7 +464,7 @@ All tables inherit **UUID primary keys** and **`created_at` / `updated_at`** tim
 
 | Concern            | Technology                                          |
 | ------------------ | --------------------------------------------------- |
-| Language / Runtime | Python 3.13, AsyncIO (100% async I/O)               |
+| Language / Runtime | Python 3.10+, asyncio               |
 | Web framework      | FastAPI + Uvicorn                                   |
 | Validation         | Pydantic v2 (+ pydantic-settings)                   |
 | ORM / Migrations   | SQLAlchemy 2 (async) + Alembic                      |
