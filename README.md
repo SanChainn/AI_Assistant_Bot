@@ -1,16 +1,14 @@
-# AI Personal Assistant 🤖
+﻿# AI Personal Assistant 🤖
 
 A production-grade, modular AI Personal Assistant built with **FastAPI**, **Python 3.13**, and **Clean Architecture**. Integrates with **Telegram**, **Google Calendar**, **OpenRouter LLM**, and supports long-term memory, RAG, tool calling, and multi-user capabilities.
 
 > 📚 **Documentation:** [📘 System Overview & Diagrams](SYSTEM_OVERVIEW.md) · [🏗️ Architecture Deep Dive](ARCHITECTURE.md) · [🚀 Deployment Guide](DEPLOYMENT.md)
 
-
 ## 🖼️ Visual Overview
 
-| System Overview | AI Personal Assistant |
-|:---:|:---:|
+|                   System Overview                   |                      AI Personal Assistant                      |
+| :-------------------------------------------------: | :-------------------------------------------------------------: |
 | ![System Overview](docs/images/system-overview.jpg) | ![AI Personal Assistant](docs/images/ai-personal-assistant.jpg) |
-
 
 ---
 
