@@ -35,7 +35,7 @@ A production-oriented, modular AI Personal Assistant built with **FastAPI**, **P
 | **Deployment**     | Full Docker Compose stack (FastAPI, Celery, PostgreSQL, Redis, Qdrant, Nginx) with HTTPS webhooks; plus a zero-dependency SQLite dev mode                                           |
 | **Code Quality**   | Type hints everywhere, Pydantic v2 validation, SQLAlchemy 2 async ORM, Alembic migrations, Ruff + strict mypy                                                                       |
 
-### Bullet points (achievements style)
+### Bullet points (achievements)
 
 - Built an **AI assistant** on Telegram serving multiple users concurrently using **Python, FastAPI, and asynchronous I/O (asyncio)**
 - Designed a **Clean Architecture** backend (API → Services → Repositories → Models) with **Dependency Injection** and the **Repository Pattern**, keeping business logic testable and framework-independent
