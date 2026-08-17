@@ -253,6 +253,7 @@ ai-personal-assistant/
 │   │   ├── calendar.py       # Calendar logic
 │   │   ├── chat.py           # Chat + message logic
 │   │   ├── conversation.py   # LLM conversation orchestration
+│   │   ├── document_reader.py # Document Reader   
 │   │   ├── email.py          # Email logic
 │   │   ├── embedding.py      # Text embeddings
 │   │   ├── google_calendar.py # Google Calendar API + OAuth
